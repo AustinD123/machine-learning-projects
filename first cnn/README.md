@@ -1,27 +1,3 @@
-# CIFAR-10 Classification with PyTorch
-
-This project demonstrates how to build and train a Convolutional Neural Network (CNN) to classify images from the CIFAR-10 dataset using PyTorch.
-
-## Overview
-
-The project includes:
-- Loading and preprocessing the CIFAR-10 dataset
-- Defining a CNN model
-- Training the model with an Adam optimizer and learning rate scheduler
-- Evaluating the model's performance
-- total accuracy was 67%
-
-## Prerequisites
-
-Ensure you have the following Python packages installed:
-
-- `torch`
-- `torchvision`
-- `matplotlib`
-- `pandas`
-- `tqdm`
-
-You can install the required packages using pip:
-
-```bash
-pip install torch torchvision matplotlib pandas tqdm
+version https://git-lfs.github.com/spec/v1
+oid sha256:7c7c940bbd415c651e02e2d149ab9be7424a87fddad1488e59247304679edb1f
+size 678
