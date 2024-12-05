@@ -1,4 +1,10 @@
-mnist[[:space:]]beginner/mnist_train.csv filter=lfs diff=lfs merge=lfs -text
-mnist[[:space:]]beginner/mnist_test.csv filter=lfs diff=lfs merge=lfs -text
-first[[:space:]]cnn/data/cifar-10-python.tar.gz filter=lfs diff=lfs merge=lfs -text
-first[[:space:]]cnn/** filter=lfs diff=lfs merge=lfs -text
+mnist/beginner/mnist_train.csv filter=lfs diff=lfs merge=lfs -text
+mnist/beginner/mnist_test.csv filter=lfs diff=lfs merge=lfs -text
+first/cnn/data/cifar-10-python.tar.gz filter=lfs diff=lfs merge=lfs -text
+first/cnn/** filter=lfs diff=lfs merge=lfs -text
+*.ipynb text eol=lf
+*.csv text eol=lf
+*.txt text eol=lf
+*.vocab text eol=lf
+*.feat text eol=lf
+"history of ml basically/wordEmbeddings/aclImdb/README" text eol=lf
