@@ -1,85 +1,157 @@
-# Transformer Components in PyTorch
+# PyTorch Transformer Implementation
 
-This repository contains the implementation of key components used in a Transformer architecture, written in PyTorch. The components include input embeddings, positional encoding, and layer normalization. These components are commonly used in models for tasks such as language modeling, machine translation, and more.
+## Table of Contents
+
+* [Overview](#overview)
+* [Components](#components)
+* [Usage](#usage)
+* [Implementation Details](#implementation-details)
+* [Requirements](#requirements)
 
 ## Overview
 
-The code defines three key classes:
+This repository contains a PyTorch implementation of the Transformer model as described in the paper ["Attention Is All You Need"](https://arxiv.org/abs/1706.03762).
 
-1. **`InputEmbeddings`**: Creates an embedding layer that maps the input token indices to dense vectors, scaled by the square root of the model's dimension (`d_model`).
-2. **`PositionalEncoding`**: Adds positional information to the token embeddings, making the model aware of the order of tokens in the sequence.
-3. **`LayerNormalization`**: Performs layer normalization, which helps stabilize and speed up training.
+## Components
 
-## Classes
+### Core Modules
 
-### `InputEmbeddings`
+#### Transformer
+```python
+class Transformer(nn.Module):
+    def __init__(self, encoder, decoder, src_embed, tgt_embed, src_pos, tgt_pos, projection_layer)
+```
+The main model class combining encoder, decoder, embeddings, and projection layers.
 
-This class implements an embedding layer for the input tokens. The embeddings are scaled by the square root of the model's dimension to prevent the gradients from becoming too small.
+#### Encoder and Decoder
+```python
+class Encoder(nn.Module):
+    def __init__(self, features: int, layers: nn.ModuleList)
 
-#### Constructor Parameters:
-- `d_model (int)`: The dimensionality of the output embeddings.
-- `vocab_size (int)`: The size of the vocabulary (i.e., the number of unique tokens).
+class Decoder(nn.Module):
+    def __init__(self, features: int, layers: nn.ModuleList)
+```
+Process input sequences and generate output sequences respectively.
 
-#### Methods:
-- `forward(x)`: Given an input tensor `x` (token indices), it returns the scaled embeddings.
+#### Multi-Head Attention
+```python
+class MultiHeadAttentionBlock(nn.Module):
+    def __init__(self, d_model: int, h: int, dropout: float)
+```
+Implements the multi-head attention mechanism supporting both self-attention and cross-attention.
 
-### `PositionalEncoding`
+### Supporting Modules
 
-This class generates positional encodings, which are added to the input embeddings to inject information about the positions of tokens in a sequence.
+#### Layer Normalization
+```python
+class LayerNormalization(nn.Module):
+    def __init__(self, features: int, eps: float=10**-6)
+```
+Normalizes the outputs of sub-layers.
 
-#### Constructor Parameters:
-- `d_model (int)`: The dimensionality of the input embeddings and positional encodings.
-- `seq_len (int)`: The maximum sequence length that the model can handle.
-- `dropout (float)`: Dropout rate applied to the final output.
+#### Feed Forward Block
+```python
+class FeedForwardBlock(nn.Module):
+    def __init__(self, d_model: int, d_ff: int, dropout: float)
+```
+Implements position-wise feed-forward networks.
 
-#### Methods:
-- `forward(x)`: Adds positional encodings to the input tensor `x` and applies dropout.
+#### Input Embeddings
+```python
+class InputEmbeddings(nn.Module):
+    def __init__(self, d_model: int, vocab_size: int)
+```
+Converts input tokens to embeddings.
 
-### `LayerNormalization`
+#### Positional Encoding
+```python
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model: int, seq_len: int, dropout: float)
+```
+Adds positional information to the embeddings.
 
-This class implements layer normalization, which normalizes the input tensor along the last dimension. Layer normalization helps to stabilize the training of deep networks by reducing the internal covariate shift.
+## Usage
 
-#### Constructor Parameters:
-- `eps (float)`: A small value added to the denominator to prevent division by zero (default is `1e-6`).
+### Model Creation
 
-#### Methods:
-- `forward(x)`: Normalizes the input tensor `x` and applies the learnable scaling (`alpha`) and bias (`bias`) parameters.
+```python
+transformer = build_transformer(
+    src_vocab_size=1000,    # Source vocabulary size
+    tgt_vocab_size=1000,    # Target vocabulary size
+    src_seq_len=128,        # Max source sequence length
+    tgt_seq_len=128,        # Max target sequence length
+    d_model=512,            # Model dimension
+    N=6,                    # Number of encoder/decoder blocks
+    h=8,                    # Number of attention heads
+    dropout=0.1,           # Dropout rate
+    d_ff=2048              # Feed-forward dimension
+)
+```
+
+### Forward Pass
+
+```python
+# Encoding
+encoder_output = transformer.encode(src, src_mask)
+
+# Decoding
+decoder_output = transformer.decode(encoder_output, src_mask, tgt, tgt_mask)
+
+# Final projection
+output = transformer.project(decoder_output)
+```
+
+## Implementation Details
+
+### Architecture Specifications
+
+* **Encoder Stack**: N=6 identical layers
+* **Decoder Stack**: N=6 identical layers
+* **Attention Heads**: h=8 parallel attention heads
+* **Model Dimension**: d_model=512
+* **Feed-Forward Size**: d_ff=2048
+* **Dropout Rate**: 0.1
+
+### Key Features
+
+* Layer normalization before each sub-layer
+* Residual connections around each sub-layer
+* Positional encoding using sine and cosine functions
+* Scaled dot-product attention
+* Xavier uniform initialization
+
+### Attention Computation
+
+The attention mechanism follows these steps:
+
+1. Linear projections of queries, keys, and values
+2. Split into multiple heads
+3. Scaled dot-product attention
+4. Concatenation of heads
+5. Final linear projection
+
+### Positional Encoding
+
+Uses sinusoidal position encoding:
+
+* Even indices: sine function
+* Odd indices: cosine function
+* Wavelengths form geometric progression from 2π to 10000·2π
 
 ## Requirements
 
-- Python 3.x
-- PyTorch 1.7.0 or later
-- `math` library (included in Python's standard library)
+* Python 3.6+
+* PyTorch
+* Math (standard library)
 
-## Usage Example
+## Model Parameters
 
-Here is an example of how to use these components:
+Default hyperparameters (as per the original paper):
 
-```python
-import torch
-import math
-
-# Example parameters
-d_model = 512
-vocab_size = 10000
-seq_len = 100
-dropout = 0.1
-
-# Create instances of the components
-input_embeddings = InputEmbeddings(d_model=d_model, vocab_size=vocab_size)
-positional_encoding = PositionalEncoding(d_model=d_model, seq_len=seq_len, dropout=dropout)
-layer_norm = LayerNormalization()
-
-# Sample input (batch of sequences with token indices)
-x = torch.randint(0, vocab_size, (32, seq_len))  # Example input: batch of sequences of token indices
-
-# Get input embeddings
-embedding_output = input_embeddings(x)
-
-# Add positional encoding
-positional_output = positional_encoding(embedding_output)
-
-# Apply layer normalization
-normalized_output = layer_norm(positional_output)
-
-print(normalized_output.shape)  # Output shape: (32, seq_len, d_model)
+| Parameter | Value | Description |
+|-----------|--------|-------------|
+| d_model | 512 | Embedding dimension |
+| N | 6 | Number of blocks |
+| h | 8 | Attention heads |
+| d_ff | 2048 | Feed-forward dimension |
+| dropout | 0.1 | Dropout rate |
