@@ -78,7 +78,8 @@ train_loader = DataLoader(train_subset, batch_size=32, shuffle=True, num_workers
 test_loader = DataLoader(test_subset, batch_size=32, shuffle=False, num_workers=4, collate_fn=custom_collate_fn)
 
 # Test the DataLoader
-for images, captions in train_loader:
-    print("Images shape:", images.shape)  # Should be (batch_size, 3, 224, 224)
-    print("Captions shape:", captions.shape)  # Should be (batch_size, max_sequence_length)
-    break
+if __name__ == '__main__':
+    for images, captions in train_loader:
+        print("Images shape:", images.shape)  # Should be (batch_size, 3, 224, 224)
+        print("Captions shape:", captions.shape)  # Should be (batch_size, max_sequence_length)
+        break
