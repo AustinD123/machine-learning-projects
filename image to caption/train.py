@@ -9,7 +9,10 @@ import os
 from transformers import BertTokenizer
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 <<<<<<< HEAD
+<<<<<<< HEAD
 import multiprocessing
+=======
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 =======
 >>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 
@@ -28,6 +31,7 @@ model = fullmodel(
 # Define loss function (ignoring padding token)
 criterion = nn.CrossEntropyLoss(ignore_index=TOKENIZER.pad_token_id)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 # Define optimizer with single learning rate definition
 LEARNING_RATE = 5e-4  # Initial learning rate
@@ -87,6 +91,8 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
     os.makedirs('checkpoints', exist_ok=True)
     best_loss = float('inf')
 =======
+=======
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 # Define optimizer
 LEARNING_RATE = 1e-3
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-5)
@@ -106,6 +112,9 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
         tokenizer (transformers.PreTrainedTokenizer): Tokenizer for processing captions.
     """
     os.makedirs('checkpoints', exist_ok=True)
+<<<<<<< HEAD
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
+=======
 >>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
     
     for epoch in range(epochs):
@@ -114,8 +123,11 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
         correct_predictions = 0
         total_predictions = 0
 <<<<<<< HEAD
+<<<<<<< HEAD
         current_lr = optimizer.param_groups[0]['lr']
         print(f"\nEpoch {epoch+1}/{epochs} - Learning Rate: {current_lr:.6f}")
+=======
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 =======
 >>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
         
@@ -126,10 +138,16 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
             # Forward pass
             outputs, attention_weights = model(image, caption)
 <<<<<<< HEAD
+<<<<<<< HEAD
             outputs = outputs[:, :-1, :]
             targets = caption[:, 1:]
             outputs_flat = outputs.reshape(-1, tokenizer.vocab_size)
             targets_flat = targets.reshape(-1)
+=======
+            targets = caption[:, 1:]  # Shift target for teacher forcing
+            outputs_flat = outputs.view(-1, tokenizer.vocab_size)
+            targets_flat = targets.view(-1)
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 =======
             targets = caption[:, 1:]  # Shift target for teacher forcing
             outputs_flat = outputs.view(-1, tokenizer.vocab_size)
@@ -154,7 +172,11 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
                 avg_loss = running_loss / 200
                 accuracy = correct_predictions / total_predictions if total_predictions > 0 else 0
 <<<<<<< HEAD
+<<<<<<< HEAD
                 print(f"Step [{idx+1}/{len(train_loader)}], "
+=======
+                print(f"Epoch [{epoch+1}/{epochs}], Step [{idx+1}/{len(train_loader)}], "
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 =======
                 print(f"Epoch [{epoch+1}/{epochs}], Step [{idx+1}/{len(train_loader)}], "
 >>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
@@ -175,10 +197,16 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
 
                 outputs, attention_weights = model(image, caption)
 <<<<<<< HEAD
+<<<<<<< HEAD
                 outputs = outputs[:, :-1, :]
                 targets = caption[:, 1:]
                 outputs_flat = outputs.reshape(-1, tokenizer.vocab_size)
                 targets_flat = targets.reshape(-1)
+=======
+                targets = caption[:, 1:]
+                outputs_flat = outputs.view(-1, tokenizer.vocab_size)
+                targets_flat = targets.view(-1)
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
 =======
                 targets = caption[:, 1:]
                 outputs_flat = outputs.view(-1, tokenizer.vocab_size)
@@ -195,6 +223,7 @@ def train(epochs, model, train_loader, test_loader, optimizer, criterion, tokeni
         
         avg_test_loss = test_loss / len(test_loader)
         test_accuracy = test_correct / test_total if test_total > 0 else 0
+<<<<<<< HEAD
 <<<<<<< HEAD
         
         # Step the scheduler based on validation loss
@@ -247,6 +276,8 @@ if __name__ == '__main__':
     
     train(EPOCHS, model, train_loader, test_loader, optimizer, criterion, TOKENIZER, scheduler)
 =======
+=======
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
         print(f"Epoch [{epoch+1}/{epochs}], Validation Loss: {avg_test_loss:.4f}, Accuracy: {test_accuracy:.4f}")
         
         # Save checkpoint
@@ -256,5 +287,9 @@ if __name__ == '__main__':
 
 # Run training
 EPOCHS = 100  # Set desired number of epochs
+<<<<<<< HEAD
+train(EPOCHS, model, train_loader, test_loader, optimizer, criterion, TOKENIZER)
+>>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
+=======
 train(EPOCHS, model, train_loader, test_loader, optimizer, criterion, TOKENIZER)
 >>>>>>> a2ce58dbff18cdab7b95f558339aab9284ddc8e3
